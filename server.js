@@ -9,8 +9,28 @@ const hbs = exphbs.create({});
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+const session = require('express-session');
+
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const sess = {
+    //secret env
+    secret: 'Super secret secret',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize
+    })
+};
+
+
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+
+//
+app.use(session(sess));
 //so I can use my style sheets etc
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
